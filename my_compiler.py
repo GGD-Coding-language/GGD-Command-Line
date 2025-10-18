@@ -1,9 +1,12 @@
+
+# This is not the real compiler since I am still working on it.
+
 import os
 import subprocess
 from pathlib import Path
 
 def translate_custom_to_cpp(source_code: str) -> str:
-    # Always start with <Geode>
+    # Always start with <Geode> for the conversion to C++
     cpp = ["#include <Geode>", "", "#include <iostream>", "using namespace std;", ""]
     lines = source_code.splitlines()
 
@@ -12,7 +15,7 @@ def translate_custom_to_cpp(source_code: str) -> str:
         if not line:
             continue
 
-        # Example syntax rules — customize these freely!
+        # Fake syntax rules
         if line.startswith("say "):
             cpp.append(f'cout << {line[4:]} << endl;')
         elif line.startswith("let "):
@@ -48,8 +51,9 @@ def compile_custom_file(input_path: Path, install_dir: Path):
     # Compile using gdd
     try:
         subprocess.run(["gdd", str(cpp_path), "-o", str(exe_path)], check=True)
-        print(f"✅ Compiled successfully → {exe_path}")
+        print(f"✅ Compiled successfully → {exe_path}") # Will not work if you use my custom syntax in GGD-Coding-language/Documentation
         return exe_path
     except subprocess.CalledProcessError:
         print("❌ Compilation failed. Make sure gdd is installed and in PATH.")
         return None
+
