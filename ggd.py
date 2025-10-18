@@ -5,7 +5,7 @@ import os
 from my_compiler import compile_custom_file
 
 CVERSION = "1.0.2"
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 
 # Automatically find where the compiler is installed
 INSTALL_DIR = Path(__file__).parent.parent
@@ -23,7 +23,7 @@ def main():
         print("  GGD run <source_file.my>      → Compile and run")
         print("  GGD --version or version      → Show version info")
         print("  GGD install_geode             → Get commands to download geode")
-        print("  GGD docs                      → Offical Geode Documentation (For C++)")
+        print("  GGD docs                      → GGD Custom documentaion on github (Not C++)")
         print("  --offical_COMMANDNAME         → Gives you the geode version of the command")
         return
 
@@ -44,6 +44,9 @@ def main():
 
     elif command in ["--offical_docs", "offical_docs"]:
         print("go to https://docs.geode-sdk.org/ Hover and ctrl+click")
+        return
+    elif command in ["--docs", "docs", "documentaion"]:
+        print("go to https://github.com/GGD-Coding-language/Documentation Hover and ctrl+click")
         return
 
     elif command == "compile":
@@ -71,3 +74,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
