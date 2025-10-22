@@ -1,59 +1,50 @@
-
-# This is not the real compiler since I am still working on it.
-
-import os
-import subprocess
 from pathlib import Path
+import random
 
-def translate_custom_to_cpp(source_code: str) -> str:
-    # Always start with <Geode> for the conversion to C++
-    cpp = ["#include <Geode>", "", "#include <iostream>", "using namespace std;", ""]
-    lines = source_code.splitlines()
+def compile_custom_file(source: Path, install_dir: Path, togd: bool = False) -> Path:
+    """
+    Compile a .ggd source file to .cpp. If `togd` is True, prepare it for Geode mod build.
+    Returns the path to the generated .cpp file.
+    """
 
-    for line in lines:
+    # Ensure build folder exists
+    build_dir = install_dir / "build"
+    build_dir.mkdir(exist_ok=True)
+
+    cpp_path = build_dir / f"{source.stem}.cpp"
+
+    # Read GGD code
+    code = source.read_text()
+
+    # Start C++ output
+    cpp_code = "#include <Geode>\nusing namespace geode::prelude;\n\n"
+
+    for line in code.splitlines():
         line = line.strip()
-        if not line:
+        if line.startswith("//") or line == "":
+            cpp_code += line + "\n"
             continue
-
-        # Fake syntax rules
-        if line.startswith("say "):
-            cpp.append(f'cout << {line[4:]} << endl;')
-        elif line.startswith("let "):
-            cpp.append("int " + line[4:] + ";")
-        elif line.startswith("add "):
-            parts = line.split()
-            if len(parts) == 4:
-                _, a, b, c = parts
-                cpp.append(f"{c} = {a} + {b};")
+        # Handle CreateButton
+        if line.startswith("CreateButton("):
+            parts = line[len("CreateButton("):-1].split(",")
+            name = parts[0].strip().strip('"')
+            place = parts[1].strip()
+            id_val = parts[2].strip()
+            enabled = parts[3].strip().lower() == "true"
+            cpp_code += f'auto {id_val} = ButtonSprite::create("{name}");\n'
+            cpp_code += f'menu->addChild({id_val});\n'
+        # Handle MMnewButton
+        elif line.startswith("MMnewButton("):
+            parts = line[len("MMnewButton("):-1].split(",")
+            name = parts[0].strip().strip('"')
+            filename = parts[1].strip()
+            id_val = parts[2].strip()
+            cpp_code += f'auto {id_val} = CCMenuItemSpriteExtra::create(ButtonSprite::create("{name}"), this, nullptr);\n'
+            cpp_code += f'menu->addChild({id_val});\n'
         else:
-            cpp.append("// Unknown syntax: " + line)
+            cpp_code += f"// {line}\n"
 
-    return "\n".join(cpp)
-
-def compile_custom_file(input_path: Path, install_dir: Path):
-    if not input_path.exists():
-        print(f"❌ File not found: {input_path}")
-        return
-
-    # Load your custom language code
-    source_code = input_path.read_text(encoding="utf-8")
-
-    # Translate to C++
-    cpp_code = translate_custom_to_cpp(source_code)
-
-    # Output file names
-    cpp_path = install_dir / (input_path.stem + ".cpp")
-    exe_path = install_dir / (input_path.stem + ".exe")
-
-    cpp_path.write_text(cpp_code, encoding="utf-8")
+    cpp_path.write_text(cpp_code)
     print(f"✅ Generated: {cpp_path}")
 
-    # Compile using gdd
-    try:
-        subprocess.run(["gdd", str(cpp_path), "-o", str(exe_path)], check=True)
-        print(f"✅ Compiled successfully → {exe_path}") # Will not work if you use my custom syntax in GGD-Coding-language/Documentation
-        return exe_path
-    except subprocess.CalledProcessError:
-        print("❌ Compilation failed. Make sure gdd is installed and in PATH.")
-        return None
-
+    return cpp_path

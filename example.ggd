@@ -1,0 +1,6 @@
+var hi = 1
+var hello = "world"
+NewAlert("Title", "Text", "Button")
+DisclaimerAlert("Disclaimer Text")
+CreateButton("This does nothing", LevelPlayScreen, 6942067, true)
+MMnewButton("Menu", clippy.png, 7602496)
