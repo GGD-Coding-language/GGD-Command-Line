@@ -1,12 +1,6 @@
-Put the files in a EMPTY folder
-Then open administerater CMD and type in
-```
-setx "C:\Path\To\Your\Folder;%PATH%"
-exit
-```
-then start CMD or PS and type in GGD, if it does not work, you did not follow the instructions correctly.
+# How to install
 
-Also it will best work when you do this in admin CMD:
+Start CMD or PS and type in GGD
 ```
 mkdir C:\Users\<Username>\GGD
 cd C:\Users\<Username>\GGD
@@ -19,3 +13,4 @@ echo You should see "C:\Users\<Username>\GGD\compiler" in there ↑
 echo After this please type in EXIT to confirm you are done,
 echo If you do not see "C:\Users\<Username>\GGD\compiler" then please send us a email :)
 ```
+Replace <Username> with your windows username
