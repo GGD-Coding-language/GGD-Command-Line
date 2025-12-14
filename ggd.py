@@ -259,7 +259,7 @@ def main():
         return
 
     if command in ["--docs", "docs", "documentation"]:
-        print("Go to https://github.com/GGD-Coding-language/Documentation Hover and ctrl+click")
+        print("Go to https://ggd-coding-language.github.io/Documentation.html Hover and ctrl+click")
         return
 
     if command == "compile":
@@ -290,3 +290,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
